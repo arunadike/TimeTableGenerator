@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Timetable</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Center vertically */
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .timetable-container {
+            width: 90%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center; /* Center the text */
+        }
+
+        .timetable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin: 0 auto; /* Center the table */
+        }
+
+        .timetable th, .timetable td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .timetable th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Your Weekly Timetable</h1>
+
+    <div class="timetable-container">
+        <table class="timetable" id="timetable">
+            <thead id="timetable-head"></thead>
+            <tbody id="timetable-body"></tbody>
+        </table>
+    </div>
+
+    <script>
+        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]; // Excluded Sunday
+        const numPeriods = localStorage.getItem("numPeriods");
+        const subjects = ["Engineering mathematics-III",
+"Thermodynamics",
+"Fluid mechanics",
+"Manufacturing technology",
+"Kinematics of machines",
+"Material science and metallurgy",
+"Thermodynamics lab",
+"Fluid mechanics lab",
+"Manufacturing technology lab"]; // Define your subjects here
+
+        function generateTimetable() {
+            const timetableBody = document.getElementById("timetable-body");
+            const timetableHead = document.getElementById("timetable-head");
+            timetableBody.innerHTML = ""; // Clear existing rows
+            timetableHead.innerHTML = ""; // Clear existing header
+
+            // Create header with periods
+            const headerRow = document.createElement("tr");
+            const emptyCell = document.createElement("th");
+            headerRow.appendChild(emptyCell); // Empty cell for days
+            for (let i = 1; i <= numPeriods; i++) {
+                const periodHeader = document.createElement("th");
+                periodHeader.textContent = `Period ${i}`;
+                headerRow.appendChild(periodHeader);
+            }
+            // Adding Tea Break and Lunch Break as headers
+            const teaBreakHeader = document.createElement("th");
+            teaBreakHeader.textContent = "Tea Break";
+            headerRow.appendChild(teaBreakHeader);
+
+            const lunchBreakHeader = document.createElement("th");
+            lunchBreakHeader.textContent = "Lunch Break";
+            headerRow.appendChild(lunchBreakHeader);
+            
+            timetableHead.appendChild(headerRow);
+
+            // Create body with days, subjects, tea breaks, and lunch breaks
+            days.forEach(day => {
+                const dayRow = document.createElement("tr");
+                const dayCell = document.createElement("td");
+                dayCell.textContent = day;
+                dayRow.appendChild(dayCell);
+
+                // Create cells for periods
+                for (let i = 1; i <= numPeriods; i++) {
+                    const cell = document.createElement("td");
+                    cell.innerHTML = `
+                        <select class="subject">
+                            <option value="">Select Subject</option>
+                            ${subjects.map(subject => `<option value="${subject}">${subject}</option>`).join('')}
+                        </select>
+                        <input type="time" class="start-time" placeholder="Start Time" />
+                        <input type="time" class="end-time" placeholder="End Time" />
+                    `;
+                    dayRow.appendChild(cell);
+                }
+
+                // Add tea break cell
+                const teaBreakCell = document.createElement("td");
+                teaBreakCell.innerHTML = `<input type="time" placeholder="Tea Break" />`;
+                dayRow.appendChild(teaBreakCell);
+
+                // Add lunch break cell
+                const lunchBreakCell = document.createElement("td");
+                lunchBreakCell.innerHTML = `<input type="time" placeholder="Lunch Break" />`;
+                dayRow.appendChild(lunchBreakCell);
+
+                timetableBody.appendChild(dayRow);
+            });
+        }
+
+        // Generate the timetable on page load
+        window.onload = generateTimetable;
+
+    </script>
+
+</body>
+</html>
